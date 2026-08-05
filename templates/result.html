@@ -1,25 +1,206 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Room result | Roommate Finder</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #F6F1E7;
+      --ink: #1B2430;
+      --ink-soft: #4A5262;
+      --pine: #3A6B5C;
+      --pine-dark: #2A4E43;
+      --brass: #D9A441;
+      --line: #D8CFB8;
+      --card: #FFFDF7;
+      --error: #B4483A;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--paper);
+      background-image: radial-gradient(circle at 1px 1px, rgba(27,36,48,0.06) 1px, transparent 0);
+      background-size: 22px 22px;
+      font-family: 'Work Sans', sans-serif;
+      color: var(--ink);
+    }
+    body { display: flex; align-items: center; justify-content: center; padding: 32px 16px; }
+    main.card {
+      position: relative;
+      width: 100%;
+      max-width: 460px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(27,36,48,0.06), 0 12px 32px rgba(27,36,48,0.10);
+      padding: 44px 36px 36px;
+    }
+    main.card::before {
+      content: "";
+      position: absolute;
+      top: -14px; left: 50%;
+      transform: translateX(-50%);
+      width: 28px; height: 28px;
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      border-radius: 50%;
+    }
+    main.card::after {
+      content: "";
+      position: absolute;
+      top: -6px; left: 50%;
+      transform: translateX(-50%);
+      width: 10px; height: 10px;
+      background: var(--card);
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--pine);
+      margin-bottom: 10px;
+    }
+    .eyebrow.error-tone { color: var(--error); }
+    h1 {
+      font-family: 'Zilla Slab', serif;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 6px;
+      letter-spacing: -0.01em;
+    }
+    p.intro {
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+      margin: 0 0 8px;
+    }
+    p.error {
+      background: rgba(180,72,58,0.08);
+      border: 1px solid rgba(180,72,58,0.3);
+      color: var(--error);
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 3px;
+      margin: 8px 0 0;
+    }
+    .capacity-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 20px 0 28px;
+    }
+    .dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 1.5px solid var(--pine);
+      background: transparent;
+    }
+    .dot.filled { background: var(--pine); }
+    .capacity-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--ink-soft);
+      margin-left: 4px;
+    }
+    h2 {
+      font-family: 'Zilla Slab', serif;
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 12px;
+      padding-top: 18px;
+      border-top: 1px dashed var(--line);
+    }
+    ul {
+      list-style: none;
+      margin: 0 0 8px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 10px 14px;
+      font-size: 14px;
+    }
+    li strong { font-weight: 600; }
+    li span {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--ink-soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    p.empty-note {
+      font-size: 13px;
+      color: var(--ink-soft);
+      font-style: italic;
+      margin: 0;
+    }
+    p.back-wrap { margin: 26px 0 0; }
+    a.button {
+      display: inline-block;
+      font-family: 'Zilla Slab', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--pine);
+      text-decoration: none;
+      border-bottom: 1.5px solid var(--brass);
+      padding-bottom: 2px;
+    }
+    a.button:hover { color: var(--pine-dark); }
+  </style>
 </head>
 <body>
   <main class="card">
     {% if error %}
-      <h1>Unable to join</h1><p class="error">{{ error }}</p>
+      <div class="eyebrow error-tone">Roommate Finder · SRM</div>
+      <h1>Unable to join</h1>
+      <p class="error">{{ error }}</p>
     {% else %}
+      <div class="eyebrow">Roommate Finder · SRM</div>
       <h1>You're in!</h1>
-      <p class="intro">Room {{ room }} ({{ room_type }} people): <strong>{{ count }} / {{ limit }}</strong> places occupied.</p>
+      <p class="intro">Room {{ room }} ({{ room_type }} people)</p>
+
+      <div class="capacity-row">
+        {% for i in range(limit) %}
+          <span class="dot{% if i < count %} filled{% endif %}"></span>
+        {% endfor %}
+        <span class="capacity-label">{{ count }} / {{ limit }} occupied</span>
+      </div>
+
       <h2>Your roommates</h2>
       {% if roommates %}
-        <ul>{% for roommate in roommates %}<li><strong>{{ roommate[0] }}</strong><span>{{ roommate[1] }}</span></li>{% endfor %}</ul>
+        <ul>
+          {% for roommate in roommates %}
+            <li><strong>{{ roommate[0] }}</strong><span>{{ roommate[1] }}</span></li>
+          {% endfor %}
+        </ul>
       {% else %}
-        <p class="intro">No roommates have joined yet.</p>
+        <p class="empty-note">No roommates have joined yet.</p>
       {% endif %}
     {% endif %}
-    <p><a class="button secondary" href="{{ url_for('home') }}">Back to form</a></p>
+
+    <p class="back-wrap"><a class="button" href="{{ url_for('home') }}">← Back to form</a></p>
   </main>
 </body>
 </html>
