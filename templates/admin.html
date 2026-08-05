@@ -1,5 +1,146 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin panel</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
-<body><main class="card wide"><h1>Admin panel</h1><p class="intro">{{ total }} registered student{{ '' if total == 1 else 's' }}.</p>
-{% if users %}<div class="table-wrap"><table><thead><tr><th>Name</th><th>Room</th><th>Capacity</th><th>Contact</th></tr></thead><tbody>{% for user in users %}<tr><td>{{ user[1] }}</td><td>{{ user[2] }}</td><td>{{ user[3] }} people</td><td>{{ user[4] }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="intro">No students registered yet.</p>{% endif %}
-<p><a href="{{ url_for('home') }}">Back to form</a></p></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Roommate Finder</title>
+    <style>
+        body {
+            background-color: #e8f5e9; 
+            color: #2e7d32;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 95%;
+            max-width: 1000px;
+            overflow-x: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #1b5e20;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #4caf50;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #c8e6c9;
+        }
+        th {
+            background-color: #81c784;
+            color: white;
+            white-space: nowrap;
+        }
+        tr:hover {
+            background-color: #f1f8e9;
+        }
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+        .btn-danger { background-color: #e53935; }
+        .btn-danger:hover { background-color: #c62828; }
+        .btn-warning { background-color: #fb8c00; padding: 10px 20px;}
+        .btn-warning:hover { background-color: #ef6c00; }
+        .btn-secondary { background-color: #757575; }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 1rem;
+            color: #333;
+        }
+        .footer a {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-actions">
+            <div>
+                <h1>Admin Dashboard</h1>
+                <div class="subtitle">{{ total }} students registered yet.</div>
+            </div>
+            <form action="{{ url_for('reset_data') }}" method="POST" style="margin: 0;">
+                <button type="submit" class="btn btn-warning" onclick="return confirm('WARNING: Are you sure you want to delete ALL roommates?');">Reset All Data</button>
+            </form>
+        </div>
+        
+        {% if users %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Room</th>
+                    <th>Capacity</th>
+                    <th>Contact</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <!-- Using your exact DB tuple indexes -->
+                    <td>{{ user[1] }}</td>
+                    <td>{{ user[2] }}</td>
+                    <td>{{ user[3] }} people</td>
+                    <td>{{ user[4] }}</td>
+                    <td>
+                        <form action="{{ url_for('delete_roommate', id=user[0]) }}" method="POST" style="margin: 0;">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Remove {{ user[1] }}?');">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p style="text-align: center;">No students registered yet.</p>
+        {% endif %}
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{{ url_for('home') }}" class="btn btn-secondary">Back to form</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        Do follow my insta: <a href="https://instagram.com/v.rehansha" target="_blank">@v.rehansha</a>
+    </div>
+</body>
+</html>
