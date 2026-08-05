@@ -1,25 +1,104 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Room result | Roommate Finder</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Result | Roommate Finder</title>
+    <style>
+        body {
+            background-color: #e8f5e9; 
+            color: #2e7d32;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 { color: #1b5e20; }
+        h2 { color: #388e3c; margin-top: 25px; border-bottom: 2px solid #c8e6c9; padding-bottom: 5px; }
+        .error { color: #d32f2f; font-weight: bold; padding: 10px; background: #ffebee; border-radius: 6px; }
+        .status-box { background: #f1f8e9; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 1.1em; }
+        
+        .result-card {
+            background-color: #ffffff;
+            border-left: 5px solid #81c784;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+            border-left-color: #81c784;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: left;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .result-card h3 { margin: 0 0 5px 0; color: #1b5e20; }
+        .result-card p { margin: 5px 0; color: #424242; }
+        
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #4caf50;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn:hover { background-color: #388e3c; }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 1rem;
+            color: #333;
+        }
+        .footer a {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-  <main class="card">
-    {% if error %}
-      <h1>Unable to join</h1><p class="error">{{ error }}</p>
-    {% else %}
-      <h1>You're in!</h1>
-      <p class="intro">Room {{ room }} ({{ room_type }} people): <strong>{{ count }} / {{ limit }}</strong> places occupied.</p>
-      <h2>Your roommates</h2>
-      {% if roommates %}
-        <ul>{% for roommate in roommates %}<li><strong>{{ roommate[0] }}</strong><span>{{ roommate[1] }}</span></li>{% endfor %}</ul>
-      {% else %}
-        <p class="intro">No roommates have joined yet.</p>
-      {% endif %}
-    {% endif %}
-    <p><a class="button secondary" href="{{ url_for('home') }}">Back to form</a></p>
-  </main>
+    <div class="container">
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% else %}
+            <h1>You're in!</h1>
+            <div class="status-box">
+                Room <strong>{{ room }}</strong> ({{ room_type }} people): <br>
+                <strong style="font-size: 1.4em;">{{ count }} / {{ limit }}</strong> places occupied.
+            </div>
+            
+            <h2>Your roommates:</h2>
+            {% if roommates %}
+                {% for roommate in roommates %}
+                <div class="result-card">
+                    <h3>{{ roommate[1] }}</h3>
+                    <p><strong>Contact:</strong> {{ roommate[4] }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No roommates have joined yet. Share the link!</p>
+            {% endif %}
+        {% endif %}
+
+        <a href="{{ url_for('home') }}" class="btn">Back to form</a>
+    </div>
+
+    <div class="footer">
+        Do follow my insta: <a href="https://instagram.com/v.rehansha" target="_blank">@v.rehansha</a>
+    </div>
 </body>
 </html>
