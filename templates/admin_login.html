@@ -1,3 +1,82 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin login</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
-<body><main class="card"><h1>Admin login</h1>{% if error %}<p class="error">{{ error }}</p>{% endif %}<form method="post"><label>Password<input type="password" name="password" required autofocus></label><button type="submit">Log in</button></form><p><a href="{{ url_for('home') }}">Back to form</a></p></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Roommate Finder</title>
+    <style>
+        body {
+            background-color: #e8f5e9; 
+            color: #2e7d32;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 { color: #1b5e20; margin-top: 0; }
+        .error { color: #d32f2f; font-weight: bold; margin-bottom: 15px; }
+        input[type="password"] {
+            width: 90%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #c8e6c9;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+        }
+        input[type="password"]:focus {
+            border-color: #4caf50;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover { background-color: #388e3c; }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Access</h1>
+        
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        
+        <form method="POST">
+            <input type="password" name="password" required autofocus placeholder="Enter Admin Password">
+            <button type="submit" class="btn">Log In</button>
+        </form>
+        
+        <a href="{{ url_for('home') }}" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>
