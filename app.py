@@ -218,3 +218,32 @@ def admin_reset_all():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)), debug=False)
+    @app.route('/delete/<int:id>', methods=['POST'])
+def delete_roommate(id):
+    # Protect the route so only logged-in admins can delete
+    if 'admin' not in session:
+        return redirect(url_for('admin_login'))
+    
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('DELETE FROM users WHERE id = %s', (id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    
+    return redirect(url_for('admin'))
+
+@app.route('/reset', methods=['POST'])
+def reset_data():
+    # Protect the route so only logged-in admins can reset
+    if 'admin' not in session:
+        return redirect(url_for('admin_login'))
+        
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('DELETE FROM users')
+    conn.commit()
+    cur.close()
+    conn.close()
+    
+    return redirect(url_for('admin'))
