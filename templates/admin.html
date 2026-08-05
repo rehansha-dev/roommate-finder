@@ -97,7 +97,8 @@
                 <h1>Admin Dashboard</h1>
                 <div class="subtitle">{{ total }} students registered yet.</div>
             </div>
-            <form action="{{ url_for('reset_data') }}" method="POST" style="margin: 0;">
+            <!-- Connected to your existing admin_reset_all route -->
+            <form action="{{ url_for('admin_reset_all') }}" method="POST" style="margin: 0;">
                 <button type="submit" class="btn btn-warning" onclick="return confirm('WARNING: Are you sure you want to delete ALL roommates?');">Reset All Data</button>
             </form>
         </div>
@@ -107,6 +108,8 @@
             <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Gender</th>
+                    <th>Hostel</th>
                     <th>Room</th>
                     <th>Capacity</th>
                     <th>Contact</th>
@@ -116,13 +119,15 @@
             <tbody>
                 {% for user in users %}
                 <tr>
-                    <!-- Using your exact DB tuple indexes -->
                     <td>{{ user[1] }}</td>
-                    <td>{{ user[2] }}</td>
-                    <td>{{ user[3] }} people</td>
+                    <td style="text-transform: capitalize;">{{ user[2] }}</td>
+                    <td>{{ user[3] }}</td>
                     <td>{{ user[4] }}</td>
+                    <td>{{ user[5] }}</td>
+                    <td>{{ user[6] }}</td>
                     <td>
-                        <form action="{{ url_for('delete_roommate', id=user[0]) }}" method="POST" style="margin: 0;">
+                        <!-- Connected to your existing admin_delete route -->
+                        <form action="{{ url_for('admin_delete', student_id=user[0]) }}" method="POST" style="margin: 0;">
                             <button type="submit" class="btn btn-danger" onclick="return confirm('Remove {{ user[1] }}?');">Remove</button>
                         </form>
                     </td>
