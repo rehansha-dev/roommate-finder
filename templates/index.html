@@ -1,242 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roommate Finder</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --paper: #F6F1E7;
-    --ink: #1B2430;
-    --ink-soft: #4A5262;
-    --pine: #3A6B5C;
-    --pine-dark: #2A4E43;
-    --brass: #D9A441;
-    --line: #D8CFB8;
-    --card: #FFFDF7;
-    --error: #B4483A;
-  }
-
-  * { box-sizing: border-box; }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background: var(--paper);
-    background-image:
-      radial-gradient(circle at 1px 1px, rgba(27,36,48,0.06) 1px, transparent 0);
-    background-size: 22px 22px;
-    font-family: 'Work Sans', sans-serif;
-    color: var(--ink);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 16px;
-  }
-
-  .card {
-    position: relative;
-    width: 100%;
-    max-width: 460px;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    box-shadow: 0 1px 2px rgba(27,36,48,0.06), 0 12px 32px rgba(27,36,48,0.10);
-    padding: 44px 36px 36px;
-  }
-
-  /* keychain grommet */
-  .card::before {
-    content: "";
-    position: absolute;
-    top: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 28px;
-    height: 28px;
-    background: var(--paper);
-    border: 3px solid var(--ink);
-    border-radius: 50%;
-  }
-  .card::after {
-    content: "";
-    position: absolute;
-    top: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 10px;
-    height: 10px;
-    background: var(--card);
-    border-radius: 50%;
-    box-shadow: inset 0 0 0 1px var(--line);
-  }
-
-  .eyebrow {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--pine);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-  .eyebrow::before {
-    content: "";
-    width: 16px;
-    height: 1px;
-    background: var(--pine);
-  }
-
-  h1 {
-    font-family: 'Zilla Slab', serif;
-    font-size: 30px;
-    font-weight: 700;
-    line-height: 1.1;
-    margin: 0 0 6px;
-    letter-spacing: -0.01em;
-  }
-
-  .sub {
-    font-size: 14px;
-    color: var(--ink-soft);
-    line-height: 1.5;
-    margin: 0 0 28px;
-    max-width: 34ch;
-  }
-
-  form { display: flex; flex-direction: column; gap: 18px; }
-
-  .field { display: flex; flex-direction: column; gap: 6px; }
-
-  label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-
-  input {
-    font-family: 'Work Sans', sans-serif;
-    font-size: 16px;
-    color: var(--ink);
-    background: var(--paper);
-    border: 1.5px solid var(--line);
-    border-radius: 3px;
-    padding: 12px 14px;
-    outline: none;
-    transition: border-color 0.15s ease, background 0.15s ease;
-  }
-
-  input::placeholder { color: #A9A08C; }
-
-  input:hover { border-color: #B9AE8E; }
-
-  input:focus {
-    border-color: var(--pine);
-    background: var(--card);
-    box-shadow: 0 0 0 3px rgba(58,107,92,0.15);
-  }
-
-  input:focus-visible { outline: 2px solid var(--pine); outline-offset: 2px; }
-
-  .hint {
-    font-size: 12px;
-    color: #8A8266;
-  }
-
-  .submit {
-    margin-top: 8px;
-    font-family: 'Zilla Slab', serif;
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--paper);
-    background: var(--pine);
-    border: none;
-    border-radius: 3px;
-    padding: 14px 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: background 0.15s ease, transform 0.1s ease;
-  }
-
-  .submit:hover { background: var(--pine-dark); }
-  .submit:active { transform: translateY(1px); }
-
-  .submit .tag {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    background: var(--brass);
-    color: var(--ink);
-    padding: 3px 7px;
-    border-radius: 2px;
-  }
-
-  .footline {
-    margin-top: 22px;
-    padding-top: 18px;
-    border-top: 1px dashed var(--line);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    color: #A79E82;
-  }
-
-  .footline a {
-    color: var(--pine);
-    text-decoration: none;
-    font-weight: 600;
-  }
-  .footline a:hover { text-decoration: underline; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .submit { transition: none; }
-  }
-</style>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Roommate Finder</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-
-  <div class="card">
-    <div class="eyebrow">Roommate Finder · SRM</div>
-    <h1>Find your room,<br>find your people.</h1>
-    <p class="sub">Enter your details and we'll slot you into the next open room — two to a key, first come first paired.</p>
-
-    <form action="/submit" method="POST">
-      <div class="field">
-        <label for="name">Full name</label>
-        <input type="text" id="name" name="name" placeholder="e.g. Karunya Ram" required>
-      </div>
-
-      <div class="field">
-        <label for="contact">Contact</label>
-        <input type="text" id="contact" name="contact" placeholder="Email or phone number" required>
-        <span class="hint">So your future roommate can reach you.</span>
-      </div>
-
-      <button type="submit" class="submit">
-        Claim a room
-        <span class="tag">2 / SLOT</span>
-      </button>
+  <main class="card">
+    <h1>Roommate Finder</h1>
+    <p class="intro">Join a room and see who is already assigned to it.</p>
+    <form action="{{ url_for('submit') }}" method="post">
+      <label>Your name<input type="text" name="name" maxlength="80" required autofocus></label>
+      <label>Room number<input type="text" name="room" maxlength="30" required placeholder="e.g. A-204"></label>
+      <label>Room capacity
+        <select name="room_type" required>
+          <option value="" selected disabled>Select capacity</option>
+          {% for type, capacity in room_limits.items() %}
+          <option value="{{ type }}">{{ capacity }} people</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Contact details<input type="text" name="contact" maxlength="120" required placeholder="Phone or email"></label>
+      <button type="submit">Find roommates</button>
     </form>
-
-    <div class="footline">
-      <span>ROOM KEY · v1.0</span>
-      <a href="/admin">Admin panel →</a>
-    </div>
-  </div>
-
+    <p class="admin-link"><a href="{{ url_for('admin') }}">Admin panel</a></p>
+  </main>
 </body>
 </html>
