@@ -85,8 +85,9 @@
             {% if roommates %}
                 {% for roommate in roommates %}
                 <div class="result-card">
-                    <h3>{{ roommate[1] }}</h3>
-                    <p><strong>Contact:</strong> {{ roommate[4] }}</p>
+                    <!-- Fixed indexes to match your app.py SQL query -->
+                    <h3>{{ roommate[0] }}</h3>
+                    <p><strong>Contact:</strong> {{ roommate[1] }}</p>
                 </div>
                 {% endfor %}
             {% else %}
