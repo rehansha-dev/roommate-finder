@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Roommate Finder</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="card">
+    <h1>Roommate Finder</h1>
+    <p class="intro">Join a room and see who is already assigned to it.</p>
+    <form action="{{ url_for('submit') }}" method="post">
+      <label>Your name<input type="text" name="name" maxlength="80" required autofocus></label>
+      <label>Room number<input type="text" name="room" maxlength="30" required placeholder="e.g. A-204"></label>
+      <label>Room capacity
+        <select name="room_type" required>
+          <option value="" selected disabled>Select capacity</option>
+          {% for type, capacity in room_limits.items() %}
+          <option value="{{ type }}">{{ capacity }} people</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Contact details<input type="text" name="contact" maxlength="120" required placeholder="Phone or email"></label>
+      <button type="submit">Find roommates</button>
+    </form>
+    <p class="admin-link"><a href="{{ url_for('admin') }}">Admin panel</a></p>
+  </main>
+</body>
+</html>

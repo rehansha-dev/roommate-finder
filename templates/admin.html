@@ -1,0 +1,5 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin panel</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><main class="card wide"><h1>Admin panel</h1><p class="intro">{{ total }} registered student{{ '' if total == 1 else 's' }}.</p>
+{% if users %}<div class="table-wrap"><table><thead><tr><th>Name</th><th>Room</th><th>Capacity</th><th>Contact</th></tr></thead><tbody>{% for user in users %}<tr><td>{{ user[1] }}</td><td>{{ user[2] }}</td><td>{{ user[3] }} people</td><td>{{ user[4] }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="intro">No students registered yet.</p>{% endif %}
+<p><a href="{{ url_for('home') }}">Back to form</a></p></main></body></html>
