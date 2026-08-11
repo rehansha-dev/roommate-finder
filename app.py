@@ -10,6 +10,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-me")
 HOSTELS = {
     "boys": ["Vedavanti", "Ganga A", "Ganga B"],
     "girls": ["Krishna", "Yamuna", "Godavari", "Narmada"],
+    "gays",
 }
 CAPACITY_PRESETS = [2, 3, 4, 5, 6]
 MIN_CAPACITY = 1
