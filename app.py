@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-me")
 
 HOSTELS = {
-    "boys": ["Vedavanti", "Ganga A", "Ganga B", "Vedavati B"],
+    "boys": ["Vedavati", "Ganga A", "Ganga B", "Vedavati B"],
     "girls": ["Krishna", "Yamuna", "Godavari", "Narmada", "New Hostel"],
 
 }
