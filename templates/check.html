@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Check your room | Roommate Finder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+ 
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+      font-family: 'Nunito Sans', sans-serif;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.08) 0, transparent 40%),
+        radial-gradient(circle at 85% 75%, rgba(255,255,255,0.06) 0, transparent 45%),
+        linear-gradient(160deg, #0F2E1D 0%, #1B4332 35%, #2D6A4F 65%, #40916C 100%);
+      background-attachment: fixed;
+    }
+ 
+    .card {
+      width: 100%;
+      max-width: 400px;
+      background: #F7FAF3;
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(6,26,16,0.4);
+      padding: 34px 30px 28px;
+    }
+ 
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 24px;
+      text-align: center;
+      margin: 0 0 4px;
+      color: #16351F;
+    }
+ 
+    p.intro {
+      text-align: center;
+      font-size: 13px;
+      color: #6E7C6F;
+      margin: 0 0 22px;
+    }
+ 
+    p.error {
+      background: #FCEBE9;
+      border: 1px solid #E9A9A2;
+      color: #A93F32;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin: 0 0 18px;
+      text-align: center;
+    }
+ 
+    form { display: flex; flex-direction: column; gap: 12px; }
+ 
+    input, select {
+      width: 100%;
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 15px;
+      color: #223526;
+      background: #E9F0E3;
+      border: 1.5px solid transparent;
+      border-radius: 12px;
+      padding: 13px 16px;
+      outline: none;
+      transition: border-color 0.15s ease, background 0.15s ease;
+      appearance: none;
+    }
+ 
+    select {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%236E7C6F' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 38px;
+    }
+ 
+    input::placeholder { color: #93A392; }
+    input:hover, select:hover { background: #E1EBD9; }
+    input:focus, select:focus {
+      border-color: #40916C;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(64,145,108,0.18);
+    }
+    input:disabled, select:disabled { opacity: 0.55; }
+ 
+    button[type="submit"] {
+      margin-top: 6px;
+      width: 100%;
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: #F7FAF3;
+      background: linear-gradient(120deg, #40916C, #1B4332);
+      border: none;
+      border-radius: 12px;
+      padding: 14px 20px;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(27,67,50,0.35);
+    }
+    button[type="submit"]:hover { filter: brightness(1.05); }
+ 
+    p.back-link {
+      text-align: center;
+      margin: 18px 0 0;
+      font-size: 12px;
+    }
+    p.back-link a { color: #2D6A4F; text-decoration: none; font-weight: 700; }
+    p.back-link a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>🔍 Check your room</h1>
+    <p class="intro">See who's already in your room — no need to register again.</p>
+ 
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+ 
+    <form action="{{ url_for('check_room') }}" method="post" id="check-form">
+      <select name="gender" id="gender" required>
+        <option value="" selected disabled>Select gender</option>
+        <option value="boys">Boys</option>
+        <option value="girls">Girls</option>
+      </select>
+ 
+      <select name="hostel" id="hostel" required disabled>
+        <option value="" selected disabled>Select gender first</option>
+      </select>
+ 
+      <input type="text" name="room" inputmode="numeric" pattern="[0-9]*" maxlength="10" required
+             placeholder="Room number (e.g. 1123)"
+             oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+ 
+      <select name="room_type" required>
+        <option value="" selected disabled>Room capacity</option>
+        {% for size in capacity_presets %}
+          <option value="{{ size }}">{{ size }} sharing</option>
+        {% endfor %}
+      </select>
+ 
+      <button type="submit">Check room</button>
+    </form>
+ 
+    <p class="back-link"><a href="{{ url_for('home') }}">← Back to registration</a></p>
+  </main>
+ 
+  <script>
+    const hostelsByGender = {{ hostels | tojson }};
+    const genderSelect = document.getElementById('gender');
+    const hostelSelect = document.getElementById('hostel');
+ 
+    genderSelect.addEventListener('change', function () {
+      const hostels = hostelsByGender[this.value] || [];
+      hostelSelect.innerHTML = '';
+      hostelSelect.disabled = hostels.length === 0;
+ 
+      const placeholderOpt = document.createElement('option');
+      placeholderOpt.value = '';
+      placeholderOpt.disabled = true;
+      placeholderOpt.selected = true;
+      placeholderOpt.textContent = hostels.length ? 'Select hostel' : 'Select gender first';
+      hostelSelect.appendChild(placeholderOpt);
+ 
+      hostels.forEach(function (name) {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        hostelSelect.appendChild(opt);
+      });
+    });
+  </script>
+</body>
+</html>
