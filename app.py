@@ -208,6 +208,42 @@ def admin_reset_room():
     return redirect(url_for("admin"))
 
 
+@app.route("/check", methods=["GET", "POST"])
+def check_room():
+    if request.method == "GET":
+        return render_template("check.html", hostels=HOSTELS, capacity_presets=CAPACITY_PRESETS, error=None)
+
+    gender = request.form.get("gender", "").strip().lower()
+    hostel = request.form.get("hostel", "").strip()
+    room = request.form.get("room", "").strip()
+    room_type = request.form.get("room_type", "").strip()
+
+    valid_hostels = HOSTELS.get(gender, [])
+
+    if not all([gender, hostel, room, room_type]) or hostel not in valid_hostels or not room_type.isdigit():
+        return render_template(
+            "check.html", hostels=HOSTELS, capacity_presets=CAPACITY_PRESETS,
+            error="Please select your gender, hostel, room, and capacity to look it up."
+        ), 400
+
+    limit = int(room_type)
+
+    with get_db() as conn:
+        mark = placeholder()
+        roommates = conn.execute(
+            "SELECT name, contact FROM students "
+            f"WHERE hostel = {mark} AND room = {mark} AND room_type = {mark} ORDER BY name",
+            (hostel, room, room_type),
+        ).fetchall()
+
+    return render_template(
+        "result.html", error=None, roommates=roommates, count=len(roommates), limit=limit,
+        room=room, room_type=room_type, hostel=hostel, is_lookup=True
+    )
+
+
+</parameter>
+
 @app.route("/admin/reset_all", methods=["POST"])
 def admin_reset_all():
     if not admin_required():
