@@ -242,8 +242,6 @@ def check_room():
     )
 
 
-</parameter>
-
 @app.route("/admin/reset_all", methods=["POST"])
 def admin_reset_all():
     if not admin_required():
