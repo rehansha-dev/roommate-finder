@@ -164,7 +164,7 @@
         <option value="" selected disabled>Select gender first</option>
       </select>
 
-      <input type="text" name="room" placeholder="Room number (e.g. 134)" maxlength="30" required>
+      <input type="text" name="room" inputmode="numeric" pattern="[0-9]*" placeholder="Room number (e.g. 134)" maxlength="10" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 
       <select id="capacity-preset" required>
         <option value="" selected disabled>Room capacity</option>
