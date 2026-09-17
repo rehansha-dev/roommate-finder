@@ -161,17 +161,17 @@ def submit():
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
- if request.method == "POST":
-    user_id = request.form.get("user_id", "").strip()
-    password = request.form.get("password", "")
+    if request.method == "POST":
+        user_id = request.form.get("user_id", "").strip()
+        password = request.form.get("password", "")
 
-    if user_id != ADMIN_USER_ID or password != ADMIN_PASSWORD:
-        return render_template(
-            "admin_login.html",
-            error="Wrong User ID or Password."
-        ), 401
+        if user_id != ADMIN_USER_ID or password != ADMIN_PASSWORD:
+            return render_template(
+                "admin_login.html",
+                error="Wrong User ID or Password."
+            ), 401
 
-    session["is_admin"] = True
+        session["is_admin"] = True
 
     if not admin_required():
         return render_template("admin_login.html", error=None)
@@ -181,8 +181,8 @@ def admin():
             "SELECT id, name, gender, hostel, room, room_type, contact FROM students "
             "ORDER BY hostel, room, room_type, name"
         ).fetchall()
-    return render_template("admin.html", total=len(users), users=users)
 
+    return render_template("admin.html", total=len(users), users=users)
 
 @app.route("/admin/logout")
 def admin_logout():
