@@ -18,6 +18,7 @@ MAX_CAPACITY = 12
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 DATABASE = os.path.join(app.root_path, "database.db")
+ADMIN_USER_ID = os.environ.get("ADMIN_USER_ID", "admin")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "258025")
 
 
@@ -160,10 +161,17 @@ def submit():
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
-    if request.method == "POST":
-        if request.form.get("password") != ADMIN_PASSWORD:
-            return render_template("admin_login.html", error="Wrong password."), 401
-        session["is_admin"] = True
+   if request.method == "POST":
+    user_id = request.form.get("user_id", "").strip()
+    password = request.form.get("password", "")
+
+    if user_id != ADMIN_USER_ID or password != ADMIN_PASSWORD:
+        return render_template(
+            "admin_login.html",
+            error="Wrong User ID or Password."
+        ), 401
+
+    session["is_admin"] = True
 
     if not admin_required():
         return render_template("admin_login.html", error=None)
