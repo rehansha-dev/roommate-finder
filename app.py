@@ -161,7 +161,7 @@ def submit():
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
-   if request.method == "POST":
+ if request.method == "POST":
     user_id = request.form.get("user_id", "").strip()
     password = request.form.get("password", "")
 
